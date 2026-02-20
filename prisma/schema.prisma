@@ -1,0 +1,18 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+model BookingRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  cityVenue String?
+  eventDate String?
+  details   String?
+  createdAt DateTime @default(now())
+}
