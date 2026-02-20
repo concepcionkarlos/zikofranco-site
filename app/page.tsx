@@ -2,6 +2,12 @@
 "use client";
 
 import Image from "next/image";
+<Image
+  src="/logo.png"
+  alt="Ziko Franco Logo"
+  width={900}
+  height={900}
+/>
 import { useMemo, useState } from "react";
 
 type BookingPayload = {
