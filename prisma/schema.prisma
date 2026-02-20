@@ -3,10 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  // Si tu Prisma está exigiendo usar prisma.config.ts, deja SIN url aquí.
-  // Si NO te deja migrar sin url, entonces pon:
-  // url = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model BookingRequest {
