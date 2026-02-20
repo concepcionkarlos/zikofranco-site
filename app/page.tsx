@@ -111,10 +111,10 @@ export default function Page() {
       <section id="top" className="relative">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex flex-col items-center pt-10 pb-8 md:pt-12 md:pb-10">
-            {/* BIG LOGO (1000x1000 intrinsic, visually large) */}
+            {/* BIG lOGO (1000x1000 intrinsic, visually large) */}
             <img
               src="/logo.png"
-              alt="Ziko Franco Logo"
+              alt="Ziko Franco logo"
               width={1000}
               height={1000}
               className="w-[280px] md:w-[360px] lg:w-[420px] object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.08)]"
