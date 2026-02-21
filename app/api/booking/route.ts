@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
-export const runtime = "nodejs"; // Prisma necesita Node runtime
+export const runtime = "nodejs"; // Prisma requires Node runtime
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
@@ -18,8 +18,11 @@ type BookingBody = {
   name?: string;
   email?: string;
   cityVenue?: string;
-  eventDate?: string;
+  eventDate?: string; // "YYYY-MM-DD" from <input type="date">
   details?: string;
+
+  // Accept BOTH names (front-end uses optIn, older code used marketingOptIn)
+  optIn?: boolean;
   marketingOptIn?: boolean;
 };
 
@@ -31,8 +34,10 @@ export async function POST(req: Request) {
     const email = (body.email ?? "").trim();
     const cityVenue = (body.cityVenue ?? "").trim();
     const eventDate = (body.eventDate ?? "").trim();
-    const detailsRaw = (body.details ?? "").trim();
-    const marketingOptIn = Boolean(body.marketingOptIn);
+    const details = (body.details ?? "").trim();
+
+    // ✅ Works with both: optIn OR marketingOptIn
+    const optIn = Boolean(body.optIn ?? body.marketingOptIn ?? false);
 
     if (!name || !email) {
       return NextResponse.json(
@@ -41,11 +46,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ SIN MIGRACIÓN: guardamos el opt-in dentro de details (temporalmente)
-    const details = marketingOptIn
-      ? `${detailsRaw}\n\n[Marketing opt-in: YES]`
-      : detailsRaw;
-
+    // ✅ Store clean details (do NOT append opt-in text)
     const created = await prisma.bookingRequest.create({
       data: {
         name,
@@ -56,7 +57,8 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ ok: true, id: created.id });
+    // ✅ Return optIn to the client (useful for UI, logs, future automation)
+    return NextResponse.json({ ok: true, id: created.id, optIn });
   } catch (err: any) {
     console.error("BOOKING_API_ERROR:", err?.message || err, err);
     return NextResponse.json(
