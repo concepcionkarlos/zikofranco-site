@@ -71,7 +71,7 @@ export default function Page() {
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/70 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
           <a href="#top" className="flex items-center gap-3">
-            {/* SMALL LOGO (100x100 intrinsic, visual size controlled by CSS) */}
+            {/* SMALL LOGO */}
             <img
               src="/logo.png"
               alt="Ziko Franco"
@@ -103,6 +103,14 @@ export default function Page() {
             >
               Book the Show
             </a>
+
+            {/* Admin (visible) */}
+            <a
+              href="/admin"
+              className="rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:border-white/40"
+            >
+              Admin
+            </a>
           </nav>
         </div>
       </header>
@@ -111,7 +119,7 @@ export default function Page() {
       <section id="top" className="relative">
         <div className="mx-auto max-w-6xl px-4">
           <div className="flex flex-col items-center pt-10 pb-8 md:pt-12 md:pb-10">
-            {/* BIG lOGO (1000x1000 intrinsic, visually large) */}
+            {/* BIG LOGO */}
             <img
               src="/logo.png"
               alt="Ziko Franco logo"
@@ -133,7 +141,6 @@ export default function Page() {
               45–90 minute sets • Miami based • Available for U.S. tours
             </p>
 
-            {/* PRO: Only 3 primary actions */}
             <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
               <a
                 href="#booking"
@@ -142,7 +149,6 @@ export default function Page() {
                 Request Booking
               </a>
 
-              {/* Listen should not duplicate platform links here — just scroll to Music section */}
               <a
                 href="#music"
                 className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white hover:border-white/40"
@@ -175,7 +181,7 @@ export default function Page() {
         </p>
       </section>
 
-      {/* MUSIC (ONLY place for platform buttons) */}
+      {/* MUSIC */}
       <section id="music" className="mx-auto max-w-6xl px-4 pt-8 pb-10">
         <h2 className="text-xl font-semibold">Music</h2>
         <p className="mt-3 text-sm text-zinc-400">Listen on your preferred platform:</p>
@@ -269,8 +275,9 @@ export default function Page() {
                   <input
                     value={form.eventDate}
                     onChange={(e) => setForm((s) => ({ ...s, eventDate: e.target.value }))}
-                    placeholder="YYYY-MM-DD"
+                    type="date"
                     className="mt-2 w-full rounded-xl border border-white/10 bg-zinc-950/40 px-3 py-2 text-sm outline-none focus:border-white/25"
+                    aria-label="Event date"
                   />
                 </div>
               </div>
@@ -294,8 +301,9 @@ export default function Page() {
                 {status.type === 'loading' ? 'Sending…' : 'Request Booking / Estimate'}
               </button>
 
+              {/* NOTE (PRO / NO TECH) */}
               <p className="mt-3 text-xs text-zinc-400">
-                This form will be stored as a client request in your database (Prisma) via <code>/api/booking</code>.
+                Once you submit, we’ll review your request and reply by email with availability, pricing, and next steps.
               </p>
 
               {status.type === 'ok' && (
@@ -311,7 +319,7 @@ export default function Page() {
             </form>
           </div>
 
-          {/* Social & Contact (PRO: keep it, but make it lighter — not more big buttons) */}
+          {/* Social & Contact */}
           <div className="md:col-span-5">
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 md:p-6">
               <h3 className="text-sm font-semibold">Official Links</h3>

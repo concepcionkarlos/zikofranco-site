@@ -1,4 +1,4 @@
-// app/admin/page.tsx
+// app/admin/bookings/page.tsx
 import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
@@ -11,54 +11,25 @@ const prisma =
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
-export default async function AdminDashboardPage() {
-  const total = await prisma.bookingRequest.count();
-
-  const latest = await prisma.bookingRequest.findMany({
+export default async function AdminBookingsPage() {
+  const bookings = await prisma.bookingRequest.findMany({
     orderBy: { createdAt: "desc" },
-    take: 5,
-  });
-
-  const now = new Date();
-  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const start7 = new Date(now);
-  start7.setDate(start7.getDate() - 7);
-
-  const todayCount = await prisma.bookingRequest.count({
-    where: { createdAt: { gte: startToday } },
-  });
-
-  const last7Count = await prisma.bookingRequest.count({
-    where: { createdAt: { gte: start7 } },
+    take: 300,
   });
 
   return (
     <div style={{ display: "grid", gap: 14 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <div style={{ fontSize: 26, fontWeight: 900 }}>Dashboard</div>
-          <div style={{ fontSize: 12, opacity: 0.65 }}>Quick overview of booking requests.</div>
+          <div style={{ fontSize: 22, fontWeight: 900 }}>Bookings</div>
+          <div style={{ fontSize: 12, opacity: 0.65 }}>
+            Showing latest {bookings.length} requests.
+          </div>
         </div>
-
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <a href="/admin/bookings" style={primaryBtn}>View all bookings</a>
-          <a href="/" style={btn}>Back to site</a>
-        </div>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12 }}>
-        <StatCard title="Total requests" value={total} />
-        <StatCard title="Today" value={todayCount} />
-        <StatCard title="Last 7 days" value={last7Count} />
       </div>
 
       <div style={card}>
-        <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 10 }}>Latest requests</div>
-        <div style={{ fontSize: 12, opacity: 0.65, marginBottom: 10 }}>
-          Showing {latest.length} most recent.
-        </div>
-
-        {latest.length === 0 ? (
+        {bookings.length === 0 ? (
           <div style={{ opacity: 0.7 }}>No booking requests yet.</div>
         ) : (
           <div style={{ overflowX: "auto" }}>
@@ -70,21 +41,21 @@ export default async function AdminDashboardPage() {
                   <th style={th}>Email</th>
                   <th style={th}>City/Venue</th>
                   <th style={th}>Date</th>
+                  <th style={th}>Opt-in</th>
                   <th style={th}></th>
                 </tr>
               </thead>
               <tbody>
-                {latest.map((b) => (
+                {bookings.map((b) => (
                   <tr key={b.id} style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
                     <td style={td}>{new Date(b.createdAt).toLocaleString()}</td>
                     <td style={td}>{b.name}</td>
                     <td style={td}>{b.email}</td>
                     <td style={td}>{b.cityVenue}</td>
                     <td style={td}>{b.eventDate}</td>
+                    <td style={td}>{b.marketingOptIn ? "✅" : "—"}</td>
                     <td style={{ ...td, textAlign: "right" }}>
-                      <a href={`/admin/bookings/${encodeURIComponent(b.id)}`} style={viewBtn}>
-                        View
-                      </a>
+                      <a href={`/admin/bookings/${encodeURIComponent(b.id)}`} style={viewBtn}>View</a>
                     </td>
                   </tr>
                 ))}
@@ -93,15 +64,6 @@ export default async function AdminDashboardPage() {
           </div>
         )}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ title, value }: { title: string; value: number }) {
-  return (
-    <div style={card}>
-      <div style={{ fontSize: 12, opacity: 0.65 }}>{title}</div>
-      <div style={{ fontSize: 26, fontWeight: 900, marginTop: 6 }}>{value}</div>
     </div>
   );
 }
@@ -115,23 +77,6 @@ const card: React.CSSProperties = {
 
 const th: React.CSSProperties = { padding: "10px 8px", fontSize: 12, letterSpacing: 0.5 };
 const td: React.CSSProperties = { padding: "12px 8px", verticalAlign: "top" };
-
-const btn: React.CSSProperties = {
-  textDecoration: "none",
-  color: "white",
-  border: "1px solid rgba(255,255,255,0.18)",
-  background: "rgba(255,255,255,0.06)",
-  padding: "10px 12px",
-  borderRadius: 12,
-  fontSize: 14,
-  opacity: 0.95,
-};
-
-const primaryBtn: React.CSSProperties = {
-  ...btn,
-  background: "rgba(255,255,255,0.12)",
-  border: "1px solid rgba(255,255,255,0.28)",
-};
 
 const viewBtn: React.CSSProperties = {
   textDecoration: "none",
