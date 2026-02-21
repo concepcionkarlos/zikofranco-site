@@ -5,6 +5,9 @@
  * - Main website page (public)
  * - Includes Booking form that POSTs to /api/booking
  * - Responsive top nav (desktop + mobile hamburger)
+ * - PRO mobile header spacing fix
+ * - Event Date uses a calendar picker (type="date")
+ * - Booking note is professional (non-technical)
  */
 
 import { useMemo, useState, type FormEvent } from 'react';
@@ -106,8 +109,10 @@ export default function Page() {
     <main className="min-h-screen text-zinc-100 bg-zinc-950">
       {/* =========================
           TOP NAV (PRO + MOBILE MENU)
-          - Desktop: inline links + CTA + Admin
-          - Mobile: Admin visible + hamburger menu
+          - Fix for mobile "tight" header:
+            * Use tighter gap on mobile
+            * Make CTA smaller on mobile
+            * Keep Admin visible
          ========================= */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-zinc-950/70 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
@@ -158,6 +163,14 @@ export default function Page() {
 
           {/* MOBILE ACTIONS (< sm) */}
           <div className="flex sm:hidden items-center gap-2">
+            {/* Mobile CTA (smaller so it doesn't squeeze the header) */}
+            <a
+              href="#booking"
+              className="rounded-full border border-white/20 px-3 py-2 text-xs font-medium text-white hover:border-white/40 whitespace-nowrap"
+            >
+              Book
+            </a>
+
             {/* Admin visible on mobile */}
             <a
               href="/admin"
@@ -487,8 +500,6 @@ export default function Page() {
                   SoundCloud →
                 </a>
               </div>
-
-          
             </div>
           </div>
         </div>
